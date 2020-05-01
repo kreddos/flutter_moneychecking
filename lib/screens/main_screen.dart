@@ -16,6 +16,18 @@ class _MainScreenState extends State {
     ExpenseIncomeItemModel.from('Купил дошик', -300.0),
   ];
 
+  double _sum(double sum, ExpenseIncomeItemModel item) => sum + item.value;
+
+  Map<String, double> get valuesSums {
+    Map<String, double> result = new Map();
+
+    result['balance'] = values.fold(0, _sum);
+    result['income'] = values.where((item) => item.value > 0).fold(0, _sum);
+    result['expenses'] = values.where((item) => item.value < 0).fold(0, _sum);
+
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +42,7 @@ class _MainScreenState extends State {
                   child: Column(
                     children: <Widget>[
                       SizedBox(height: 30.0),
-                      MainBudgetInfo(balance: 200.0, income: 100.0, expenses: 200.0),
+                      MainBudgetInfo(balance: valuesSums['balance'], income: valuesSums['income'], expenses: valuesSums['expenses']),
                       SizedBox(height: 30.0),
                       ExpenseHistory(data: values),
                       SizedBox(height: 20.0),
