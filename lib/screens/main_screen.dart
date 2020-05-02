@@ -28,9 +28,42 @@ class _MainScreenState extends State {
     return result;
   }
 
+  Future<ExpenseIncomeItemModel> showNewOperationDialog({BuildContext context}) {
+    return showDialog<ExpenseIncomeItemModel>(context: context, builder: (context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+        child: Container(
+          width: MediaQuery
+              .of(context)
+              .size
+              .width,
+          height: 300,
+          child: NewOperationForm(
+            onSubmit: (value) {
+              Navigator.pop(context, ExpenseIncomeItemModel.from(value.operationName, value.value));
+            },
+          ),
+        ),
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          ExpenseIncomeItemModel value = await showNewOperationDialog(context: context);
+          setState(() {
+            if (value != null) {
+              values.add(value);
+            }
+          });
+        },
+        child: Icon(Icons.add, color: Colors.white),
+      ),
       body: SafeArea(
         child: Container(
           child: SingleChildScrollView(
@@ -42,18 +75,12 @@ class _MainScreenState extends State {
                   child: Column(
                     children: <Widget>[
                       SizedBox(height: 30.0),
-                      MainBudgetInfo(balance: valuesSums['balance'], income: valuesSums['income'], expenses: valuesSums['expenses']),
+                      MainBudgetInfo(balance: valuesSums['balance'],
+                          income: valuesSums['income'],
+                          expenses: valuesSums['expenses']),
                       SizedBox(height: 30.0),
                       ExpenseHistory(data: values),
-                      SizedBox(height: 20.0),
-                      NewOperationForm(
-                        onSubmit: (value) {
-                          setState(() {
-                            values.add(ExpenseIncomeItemModel.from(value.operationName, value.value));
-                          });
-                        },
-                      ),
-                      SizedBox(height: 20.0),
+                      SizedBox(height: 50.0),
                     ],
                   ),
                 )
