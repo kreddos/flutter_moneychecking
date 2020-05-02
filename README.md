@@ -19,4 +19,4 @@ preview
 
 ![first](./media/Screenshot_1.png)
 
-![second](./media/Screenshot_1.png)
+![second](./media/Screenshot_2.png)
